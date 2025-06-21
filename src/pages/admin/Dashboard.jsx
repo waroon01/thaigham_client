@@ -1,6 +1,50 @@
 import { useEffect } from "react";
 import useSchoolStore from "../../store/school-Store";
 
+const mockTeachers = [
+  {
+    id: "65001",
+    fullName: "สมชาย ใจดี",
+    room: "-",
+    position: "ครูชำนาญการพิเศษ",
+    role: "ผู้อำนวยการ",
+    phone: "089-123-4567",
+  },
+  {
+    id: "65002",
+    fullName: "สมหญิง รักเรียน",
+    room: "ป.1",
+    position: "ครูชำนาญการพิเศษ",
+    role: "ครูประจำชั้น",
+    phone: "086-456-7890",
+  },
+  {
+    id: "65003",
+    fullName: "นภา ฟ้าใส",
+    room: "ป.2",
+    position: "ครูชำนาญการพิเศษ",
+    role: "ครูผู้ช่วย",
+    phone: "081-234-5678",
+  },
+  {
+    id: "65004",
+    fullName: "วิชัย เก่งกาจ",
+    room: "ม.1",
+    position: "ครูชำนาญการ",
+    role: "หัวหน้าฝ่ายวิชาการ",
+    phone: "083-987-6543",
+  },
+  {
+    id: "65005",
+    fullName: "ภูมิ ภูเขา",
+    room: "-",
+    position: "ครูอาวุโส",
+    role: "รองผู้อำนวยการ",
+    phone: "080-112-3344",
+  },
+];
+
+
 const Dashboard = () => {
   const actionLoadStudent = useSchoolStore((state) => state.actionLoadStudent);
   const students = useSchoolStore((state) => state.students);
@@ -173,68 +217,23 @@ const Dashboard = () => {
               <th className="text-gray-600">เบอร์โทรศัพท์</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
-            <tr>
-              <td className="text-gray-800">65001</td>
-              <td className="text-gray-800">สมชาย ใจดี</td>
-              <td className="text-gray-800">-</td>
-              <td className="text-gray-800">ครูชำนาญการพิเศษ</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                  ผู้อำนวยการ
-                </span>
-              </td>
-              <td className="text-gray-800">เบอร์โทรศัพท์</td>
-            </tr>
-            <tr>
-              <td className="text-gray-800">65001</td>
-              <td className="text-gray-800">สมหญิง รักเรียน</td>
-              <td className="text-gray-800">-</td>
-              <td className="text-gray-800">ครูชำนาญการพิเศษ</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                  ผู้อำนวยการ
-                </span>
-              </td>
-              <td className="text-gray-800">เบอร์โทรศัพท์</td>
-            </tr>
-            <tr>
-              <td className="text-gray-800">65001</td>
-              <td className="text-gray-800">นภา ฟ้าใส</td>
-              <td className="text-gray-800">-</td>
-              <td className="text-gray-800">ครูชำนาญการพิเศษ</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                  ผู้อำนวยการ
-                </span>
-              </td>
-              <td className="text-gray-800">เบอร์โทรศัพท์</td>
-            </tr>
-            <tr>
-              <td className="text-gray-800">65001</td>
-              <td className="text-gray-800">วิชัย เก่งกาจ</td>
-              <td className="text-gray-800">-</td>
-              <td className="text-gray-800">ครูชำนาญการพิเศษ</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                  ผู้อำนวยการ
-                </span>
-              </td>
-              <td className="text-gray-800">เบอร์โทรศัพท์</td>
-            </tr>
-            <tr>
-              <td className="text-gray-800">65001</td>
-              <td className="text-gray-800">ภูมิ ภูเขา</td>
-              <td className="text-gray-800">-</td>
-              <td className="text-gray-800">ครูชำนาญการพิเศษ</td>
-              <td>
-                <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
-                  ผู้อำนวยการ
-                </span>
-              </td>
-              <td className="text-gray-800">เบอร์โทรศัพท์</td>
-            </tr>
-          </tbody>
+<tbody className="divide-y divide-gray-200">
+  {mockTeachers.map((teacher, index) => (
+    <tr key={index}>
+      <td className="text-gray-800">{teacher.id}</td>
+      <td className="text-gray-800">{teacher.fullName}</td>
+      <td className="text-gray-800">{teacher.room}</td>
+      <td className="text-gray-800">{teacher.position}</td>
+      <td>
+        <span className="px-2 py-1 text-xs rounded-full bg-green-100 text-green-800">
+          {teacher.role}
+        </span>
+      </td>
+      <td className="text-gray-800">{teacher.phone}</td>
+    </tr>
+  ))}
+</tbody>
+
         </table>
       </div>
     </div>
