@@ -31,7 +31,7 @@
     "pdfmake": "^0.2.19",
     "qs": "^6.14.0",
     "react": "^19.0.0",
-    "react-day-picker": "^8.10.1",
+    
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",
     "react-router": "^7.5.0",
