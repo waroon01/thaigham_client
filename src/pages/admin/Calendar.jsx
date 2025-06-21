@@ -4,67 +4,37 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { createEventId } from "../../utils/utilsFullcalendar"; // คุณยังสามารถใช้ฟังก์ชันนี้สร้าง id ใหม่ได้
+import { createEventId } from "../../utils/utilsFullcalendar";
 import { useForm } from "react-hook-form";
-import { createEventCalendar, getEventCalendar } from "../../api/studentApi";
-
-
+import { createEventCalendar } from "../../api/studentApi";
+import useSchoolStore from "../../store/school-Store";
 
 export default function Calendar() {
   const calendarRef = useRef(null);
-
   const [weekendsVisible, setWeekendsVisible] = useState(true);
   const [currentEvents, setCurrentEvents] = useState([]);
-  const [calendarEvents, setCalendarEvents] = useState([]); // 🟡 ข้อมูลสมมุติจาก backend
-
   const [selectedEvent, setSelectedEvent] = useState(null);
   const [showAllEventsModal, setShowAllEventsModal] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState("");
+  const hasFetched = useRef(false);
 
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm()
+  } = useForm();
 
+  const calendarEvents = useSchoolStore((state) => state.calendarEvents);
+  const setCalendarEvents = useSchoolStore((state) => state.setCalendarEvents);
+  const actionCalendarLoad = useSchoolStore((state) => state.actionCalendarLoad);
 
   useEffect(() => {
-    // 🟡 Mock fetch events (แทนที่ด้วย API จริงได้)
-
-    // const mockEventsFromAPI = [
-    //   {
-    //     id: "1",
-    //     title: "ประชุมโครงการ",
-    //     start: "2025-05-10T10:00:00",
-    //     end: "2025-05-10T12:00:00",
-    //     allDay: false,
-    //     extendedProps: {
-    //       eventdetail: "ประชุมกับทีมพัฒนาระบบ",
-    //     },
-    //   },
-    //   {
-    //     id: "2",
-    //     title: "อบรม React",
-    //     start: "2025-05-12",
-    //     allDay: true,
-    //     extendedProps: {
-    //       eventdetail: "อบรมตลอดวัน",
-    //     },
-    //   },
-    // ];
-    fetchEvent()
-
-  }, []);
-
-  async function fetchEvent(){
-    const res = await getEventCalendar()
-    const events = res.data.data
-    console.log(events)
-
-    setCalendarEvents(events);
-
-  }
+    if (!hasFetched.current && calendarEvents.length === 0) {
+      actionCalendarLoad();
+      hasFetched.current = true;
+    }
+  }, [actionCalendarLoad, calendarEvents]);
 
   function handleWeekendsToggle() {
     setWeekendsVisible(!weekendsVisible);
@@ -88,12 +58,11 @@ export default function Calendar() {
       };
 
       calendarApi.addEvent(newItem);
-      setCalendarEvents((prev) => [...prev, newItem]);
+      setCalendarEvents([...calendarEvents, newItem]);
     }
   }
 
   function handleEventClick(clickInfo) {
-    console.log(clickInfo.event)
     setSelectedEvent(clickInfo.event);
   }
 
@@ -108,28 +77,25 @@ export default function Calendar() {
     setCurrentEvents(events);
   }
 
-  const onSubmit = async(data) => {
+  const onSubmit = async (data) => {
     const calendarApi = calendarRef.current?.getApi();
     if (!calendarApi) return;
-  
+
     const newCalendarEvent = {
       id: createEventId(),
       title: data.title,
       start: data.start,
       end: data.end || null,
       allDay: data.allDay || false,
-      eventdetail: JSON.stringify(data.eventdetail), // 🔹 ย้ายมาข้างนอก
+      eventdetail: JSON.stringify(data.eventdetail),
     };
 
-    const res = await createEventCalendar(newCalendarEvent)
-    console.log(res.data)
-
+    await createEventCalendar(newCalendarEvent);
 
     calendarApi.addEvent(newCalendarEvent);
-    setCalendarEvents((prev) => [...prev, newCalendarEvent]);
-    reset(); // เคลียร์ฟอร์ม
+    setCalendarEvents([...calendarEvents, newCalendarEvent]);
+    reset();
   };
-  
 
   function handleMonthChange(event) {
     setSelectedMonth(event.target.value);
@@ -137,7 +103,6 @@ export default function Calendar() {
 
   function filterEventsByMonth(events, month) {
     if (!month) return events;
-
     return events.filter((event) => {
       const eventDate = new Date(event.start);
       return eventDate.getMonth() + 1 === parseInt(month);
@@ -146,75 +111,69 @@ export default function Calendar() {
 
   return (
     <div className="flex flex-col md:flex-row p-4 gap-4">
-      {/* Sidebar */}
       <div className="w-full md:w-1/4">
-        {/* Form */}
-        
         <div className="bg-white p-4 rounded-xl shadow space-y-3">
           <h2 className="text-xl font-semibold text-gray-700">เพิ่มกิจกรรม</h2>
           <label className="inline-flex items-center gap-2 mb-2 text-sm">
-          <input
-            type="checkbox"
-            checked={weekendsVisible}
-            onChange={handleWeekendsToggle}
-            className="w-4 h-4"
-          />
-          แสดงวันเสาร์-อาทิตย์
-        </label>
-        <form onSubmit={handleSubmit(onSubmit)}>
-  <label className="block text-sm">
-    Title
-    <input
-      {...register("title")}
-      className="w-full border p-2 rounded mt-1 text-xs"
-    />
-    {errors.title && <p className="text-red-500 text-xs">{errors.title.message}</p>}
-  </label>
+            <input
+              type="checkbox"
+              checked={weekendsVisible}
+              onChange={handleWeekendsToggle}
+              className="w-4 h-4"
+            />
+            แสดงวันเสาร์-อาทิตย์
+          </label>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <label className="block text-sm">
+              Title
+              <input
+                {...register("title")}
+                className="w-full border p-2 rounded mt-1 text-xs"
+              />
+              {errors.title && (
+                <p className="text-red-500 text-xs">{errors.title.message}</p>
+              )}
+            </label>
 
-  <label className="block text-sm mt-2">
-    Start
-    <input
-      type="datetime-local"
-      {...register("start")}
-      className="w-full border p-2 rounded mt-1 text-xs"
-    />
-    {errors.start && <p className="text-red-500 text-xs">{errors.start.message}</p>}
-  </label>
+            <label className="block text-sm mt-2">
+              Start
+              <input
+                type="datetime-local"
+                {...register("start")}
+                className="w-full border p-2 rounded mt-1 text-xs"
+              />
+            </label>
 
-  <label className="block text-sm mt-2">
-    End
-    <input
-      type="datetime-local"
-      {...register("end")}
-      className="w-full border p-2 rounded mt-1 text-xs"
-    />
-  </label>
+            <label className="block text-sm mt-2">
+              End
+              <input
+                type="datetime-local"
+                {...register("end")}
+                className="w-full border p-2 rounded mt-1 text-xs"
+              />
+            </label>
 
-  <label className="block text-sm mt-2">
-    รายละเอียด
-    <input
-      {...register("eventdetail")}
-      className="w-full border p-2 rounded mt-1 text-xs"
-    />
-  </label>
+            <label className="block text-sm mt-2">
+              รายละเอียด
+              <input
+                {...register("eventdetail")}
+                className="w-full border p-2 rounded mt-1 text-xs"
+              />
+            </label>
 
-  <label className="inline-flex items-center gap-2 mt-2 text-xs">
-    <input
-      type="checkbox"
-      {...register("allDay")}
-      className="w-4 h-4"
-    />
-    All Day
-  </label>
+            <label className="inline-flex items-center gap-2 mt-2 text-xs">
+              <input type="checkbox" {...register("allDay")} className="w-4 h-4" />
+              All Day
+            </label>
 
-  <button
-    type="submit"
-    className="w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700 mt-3 text-sm"
-  >
-    Add Event
-  </button>
-</form>
-</div>
+            <button
+              type="submit"
+              className="w-full bg-blue-600 text-white py-1 rounded hover:bg-blue-700 mt-3 text-sm"
+            >
+              Add Event
+            </button>
+          </form>
+        </div>
         <button
           onClick={() => setShowAllEventsModal(true)}
           className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 mt-4"
@@ -223,7 +182,6 @@ export default function Calendar() {
         </button>
       </div>
 
-      {/* Calendar */}
       <div className="w-full md:w-3/4 bg-white p-4 rounded-xl shadow">
         <FullCalendar
           ref={calendarRef}
@@ -239,7 +197,7 @@ export default function Calendar() {
           selectMirror={true}
           dayMaxEvents={true}
           weekends={weekendsVisible}
-          events={calendarEvents} // 🔹 ใช้ข้อมูลจาก state
+          events={calendarEvents}
           select={handleDateSelect}
           eventContent={renderEventContent}
           eventClick={handleEventClick}
@@ -247,7 +205,6 @@ export default function Calendar() {
         />
       </div>
 
-      {/* Modal: Event Details */}
       {selectedEvent && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl relative">
@@ -298,7 +255,6 @@ export default function Calendar() {
         </div>
       )}
 
-      {/* Modal: All Events */}
       {showAllEventsModal && (
         <div className="fixed inset-0 bg-violet-800/50 flex justify-center items-center z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md shadow-xl relative">
@@ -336,8 +292,7 @@ export default function Calendar() {
                     })}
                   </p>
                   <p className="text-sm">
-                    <strong>รายละเอียด:</strong>{" "}
-                    {event.eventdetail || "ไม่มี"}
+                    <strong>รายละเอียด:</strong> {event.eventdetail || "ไม่มี"}
                   </p>
                 </li>
               ))}
@@ -354,7 +309,7 @@ function renderEventContent(eventInfo) {
     <div className="flex items-center gap-1 text-xs">
       <span
         className="inline-block w-2 h-2 rounded-full"
-        style={{ backgroundColor: eventInfo.event.backgroundColor || "#D50B8B" }} // default: blue-600
+        style={{ backgroundColor: eventInfo.event.backgroundColor || "#D50B8B" }}
       ></span>
       <span>{eventInfo.event.title}</span>
     </div>

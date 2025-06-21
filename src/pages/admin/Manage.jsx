@@ -10,7 +10,7 @@ const ITEMS_PER_PAGE = 10;
 const Manage = () => {
   const actionLoadStudent = useSchoolStore((state) => state.actionLoadStudent);
   const students = useSchoolStore((state) => state.students);
-  const token = useSchoolStore((state)=>state.token)
+  const token = useSchoolStore((state) => state.token);
 
   const navigate = useNavigate();
 
@@ -59,8 +59,6 @@ const Manage = () => {
   };
 
   const handleStartEditStatus = (student_id, status) => {
-    console.log(student_id)
-    console.log(status)
     setEditStatusId(student_id);
     setEditedStatus((prev) => ({
       ...prev,
@@ -68,40 +66,39 @@ const Manage = () => {
     }));
   };
 
-const handleSaveStatus = async (student) => {
-  const student_id = student.student_id;
-  const newStatus = editedStatus[student_id];
-  console.log(token)
+  const handleSaveStatus = async (student) => {
+    const student_id = student.student_id;
+    const newStatus = editedStatus[student_id];
+    console.log(token);
 
+    try {
+      const res = await updateStudentData(
+        student_id,
+        { status: newStatus },
+        token
+      );
+      console.log(res);
 
-  try {
+      console.log("res  ", res);
+      toast.success("success! 🎉", {
+        description: "Edit student successfull.",
+      });
 
-    const res = await updateStudentData(student_id, { status: newStatus }, token);
-    console.log(res)
+      console.log("editedStatus", editedStatus);
 
-        console.log("res  ",res)
-          toast.success("success! 🎉", {
-            description: "Edit student successfull.",
-          })
+      setEditStatusId(null);
+      setEditedStatus((prev) => {
+        const copy = { ...prev };
+        delete copy[student_id];
+        return copy;
+      });
 
-          console.log("editedStatus", editedStatus)
-
-    setEditStatusId(null);
-    setEditedStatus((prev) => {
-      const copy = { ...prev };
-      delete copy[student_id];
-      return copy;
-    });
-
-    actionLoadStudent(); // โหลดข้อมูลใหม่จาก backend
-  } catch (error) {
-    console.error("เกิดข้อผิดพลาด:", error);
-    alert("ไม่สามารถอัปเดตสถานะได้");
-  }
-};
-
-
-
+      actionLoadStudent(); // โหลดข้อมูลใหม่จาก backend
+    } catch (error) {
+      console.error("เกิดข้อผิดพลาด:", error);
+      alert("ไม่สามารถอัปเดตสถานะได้");
+    }
+  };
 
   const handleEdit = (student) => {
     navigate("/admin/formedit", { state: { student } });
@@ -216,7 +213,7 @@ const handleSaveStatus = async (student) => {
                 <th className="px-4 py-2">เพศ</th>
                 <th className="px-4 py-2">อายุ</th>
                 <th className="px-4 py-2">สถานะ</th>
-                <th className="px-4 py-2">จัดการ</th>
+                <th className="px-4 py-2 flex justify-center">จัดการ</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
@@ -256,9 +253,60 @@ const handleSaveStatus = async (student) => {
                   </td>
                   <td className="px-4 py-2 text-center">
                     <div className="flex space-x-2 justify-center">
+                      {editStatusId === s.student_id ? (
+                        <button
+                          onClick={() => handleSaveStatus(s)}
+                          className="text-green-600 hover:underline hover:cursor-pointer"
+                        >
+                          <div>
+                            <svg
+                              fill="#bd2e2e"
+                              version="1.1"
+                              id="Capa_1"
+                              xmlns="http://www.w3.org/2000/svg"
+                              xmlnsXlink="http://www.w3.org/1999/xlink"
+                              viewBox="0 0 407.096 407.096"
+                              xmlSpace="preserve"
+                              className="w-6 h-6"
+                            >
+                              <g id="SVGRepo_iconCarrier">
+                                <g>
+                                  <g>
+                                    <path d="M402.115,84.008L323.088,4.981C319.899,1.792,315.574,0,311.063,0H17.005C7.613,0,0,7.614,0,17.005v373.086 c0,9.392,7.613,17.005,17.005,17.005h373.086c9.392,0,17.005-7.613,17.005-17.005V96.032 C407.096,91.523,405.305,87.197,402.115,84.008z M300.664,163.567H67.129V38.862h233.535V163.567z" />
+                                    <path d="M214.051,148.16h43.08c3.131,0,5.668-2.538,5.668-5.669V59.584c0-3.13-2.537-5.668-5.668-5.668h-43.08 c-3.131,0-5.668,2.538-5.668,5.668v82.907C208.383,145.622,210.92,148.16,214.051,148.16z" />
+                                  </g>
+                                </g>
+                              </g>
+                            </svg>
+                          </div>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() =>
+                            handleStartEditStatus(s.student_id, s.status)
+                          }
+                          className="text-yellow-600 hover:underline hover:cursor-pointer"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-5 w-5 text-green-600"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                            />
+                          </svg>
+                        </button>
+                      )}
+
                       <button
                         onClick={() => handleViewStudent(s)}
-                        className="p-1 rounded-full hover:bg-purple-100"
+                        className="p-1 rounded-full hover:bg-purple-100 hover:cursor-pointer"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -282,7 +330,7 @@ const handleSaveStatus = async (student) => {
                         </svg>
                       </button>
                       <button
-                        className="p-1 rounded-full hover:bg-blue-100"
+                        className="p-1 rounded-full hover:bg-blue-100 hover:cursor-pointer"
                         onClick={() => handleEdit(s)}
                       >
                         <svg
@@ -300,23 +348,6 @@ const handleSaveStatus = async (student) => {
                           />
                         </svg>
                       </button>
-                      {editStatusId === s.student_id ? (
-                        <button
-                          onClick={() => handleSaveStatus(s)}
-                          className="text-green-600 hover:underline"
-                        >
-                          บันทึก
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() =>
-                            handleStartEditStatus(s.student_id, s.status)
-                          }
-                          className="text-yellow-600 hover:underline"
-                        >
-                          แก้ไขสถานะ
-                        </button>
-                      )}
                     </div>
                   </td>
                 </tr>
