@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import useSchoolStore from "../store/school-Store"
 import { currentAdmin } from "../api/auth"
-import LoadingToRedirect from "./loadingToRedirect"
+import LoadingToRedirect from "./LoadingToRedirect"
 
 const ProtectRouteAdmin = ({ element }) => {
     const [ok, setOk] = useState(false)
