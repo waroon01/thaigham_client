@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from "react-router"
-import './LayoutAdmin.css'
+// import './LayoutAdmin.css'
 import useSchoolStore from "../store/school-Store"
 
 
