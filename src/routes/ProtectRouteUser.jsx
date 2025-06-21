@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import useSchoolStore from "../store/school-Store"
 import { currentUser } from "../api/auth"
-import LoadingToRedirect from "./LoadingToRedirect"
 
 const ProtectRouteUser = ({element}) => {
     const [ ok, setOk ] = useState(false)
