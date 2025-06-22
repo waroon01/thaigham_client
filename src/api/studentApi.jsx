@@ -51,3 +51,21 @@ export const getEventCalendar = async () => {
   );
 };
 
+export async function deleteEventCalendar(eventId) {
+  try {
+    const res = await axios.post(`${url_Sheet}?type=deleteEvent`, null, {
+      params: {
+        id: eventId,
+      },
+    });
+
+    if (!res.data.success) {
+      throw new Error(res.data.message || "Delete failed");
+    }
+
+    return res.data;
+  } catch (error) {
+    console.error("Error deleting event:", error);
+    throw error;
+  }
+}
