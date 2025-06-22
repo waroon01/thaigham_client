@@ -8,6 +8,7 @@ import { createEventId } from "../../utils/utilsFullcalendar";
 import { useForm } from "react-hook-form";
 import { createEventCalendar, deleteEventCalendar } from "../../api/studentApi";
 import useSchoolStore from "../../store/school-Store";
+import { toast } from "sonner";
 
 export default function Calendar() {
   const calendarRef = useRef(null);
@@ -141,7 +142,7 @@ const onSubmit = async (data) => {
     start: selectedStart,
     end: selectedEnd || null,
     allDay: data.allDay || false,
-    eventdetail: JSON.stringify(data.eventdetail),
+    eventdetail: data.eventdetail,
   };
 
   await createEventCalendar(newCalendarEvent);
@@ -163,6 +164,9 @@ const onSubmit = async (data) => {
   reset();
   setSelectedStart("");
   setSelectedEnd("");
+  toast.success("Success! 🎉", {
+    description: "เพิ่มกิจกรรมสำเร็จ",
+  });
 };
 
 // ปรับให้จันทร์เริ่มต้นที่ 0, อาทิตย์คือ 6
@@ -249,7 +253,7 @@ function generateCalendarFlexMessage(month, year, events = []) {
     const thaiDayIndex = (dayIndex + 6) % 7; // Monday=0,...Sunday=6
     const boxColor = getDayColor(thaiDayIndex);
 
-    const rawDetail = event.eventdetail ?? event.extendedProps?.eventdetail ?? "";
+    const rawDetail = event.eventdetail ?? "-";
     const cleanedDetail = typeof rawDetail === "string"
       ? rawDetail.replace(/^"|"$/g, "")
       : typeof rawDetail === "object" && rawDetail.description
