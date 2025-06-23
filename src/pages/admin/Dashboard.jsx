@@ -1,12 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useSchoolStore from "../../store/school-Store";
+import PDFTeacher from "../../components/app/PDFTeacher";
 
 const mockTeachers = [
   {
     id: "65001",
     fullName: "นางสมคิด จันขุนทศ",
     room: "",
-    position: "ผู้อำนวยการ ชำนาญการพิเศษ",
+    position: "ผู้อำนวยการสถานศึกษา",
     role: "ผู้อำนวยการ",
     phone: "089-039-3653",
   },
@@ -14,7 +15,7 @@ const mockTeachers = [
     id: "65002",
     fullName: "นายอธิชาติ ไทยธานี",
     room: "-",
-    position: "ครูชำนาญการ",
+    position: "รองผู้อำนวยการสถานศึกษา",
     role: "รองผู้อำนวยการ",
     phone: "089-282-1050",
   },
@@ -31,7 +32,7 @@ const mockTeachers = [
     fullName: "นางสาวรัตนา โครงกระโทก",
     room: "-",
     position: "ครูชำนาญการพิเศษ",
-    role: "บริหารงานบัญชีการเงิน",
+    role: "บริหารงานงบประมาณ",
     phone: "089-580-7371",
   },
   {
@@ -200,8 +201,10 @@ const getPositionBadgeClass = (position) => {
       return "bg-pink-100 text-pink-800";
     case "ครูอัตราจ้าง":
       return "bg-green-100 text-green-800";
-    case "ผู้อำนวยการ ชำนาญการพิเศษ":
+    case "ผู้อำนวยการสถานศึกษา":
       return "bg-orange-100 text-orange-800";
+    case "รองผู้อำนวยการสถานศึกษา":
+      return "bg-red-100 text-red-400";
     default:
       return "bg-gray-100 text-gray-600";
   }
@@ -218,10 +221,22 @@ const Dashboard = () => {
     total > 0 ? ((maleCount / total) * 100).toFixed(1) : "0.0";
   const femalePercent =
     total > 0 ? ((femaleCount / total) * 100).toFixed(1) : "0.0";
-  const teacherCount = 20;
+  const teacherCount = mockTeachers.length;
   const studentPerTeacherRatio =
     total > 0 ? `1:${Math.round(total / teacherCount)}` : "1:0";
 
+  // ✅ เพิ่ม state สำหรับค้นหา
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // ✅ ฟิลเตอร์รายชื่อครูตามคำค้นหา
+const filteredTeachers = mockTeachers.filter((teacher) => {
+  const term = searchTerm.toLowerCase();
+  return (
+    teacher.fullName.toLowerCase().includes(term) ||
+    teacher.position.toLowerCase().includes(term) ||
+    teacher.role.toLowerCase().includes(term)
+  );
+});
   useEffect(() => {
     actionLoadStudent();
   }, []);
@@ -328,10 +343,11 @@ const Dashboard = () => {
           <div className="flex justify-between">
             <div>
               <p className="text-sm text-gray-500 font-medium">
-                จำนวนข้าราชการครู
+                จำนวนครูทั้งหมด
               </p>
-              <p className="text-2xl font-bold text-gray-800">20</p>
+              <p className="text-2xl font-bold text-gray-800">{mockTeachers.length - 2}</p>
             </div>
+
             <div className="bg-yellow-100 rounded-full p-2">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -377,13 +393,32 @@ const Dashboard = () => {
           <h2 className="text-lg font-semibold text-gray-800">
             รายชื่อครูปัจจุบัน
           </h2>
-          <a
-            href="#students"
-            className="text-purple-600 hover:text-purple-800 text-sm font-medium"
-          >
-            ดูทั้งหมด
-          </a>
+          <div className="relative mr-4">
+            <input
+              type="text"
+              placeholder="ชื่อ-นามสกุล/วิทยฐานะ/ตำแหน่ง"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent w-72"
+            />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5 text-gray-400 absolute left-3 top-2.5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
+          </div>
+          <PDFTeacher filteredTeachers={filteredTeachers}/>
         </div>
+        {/* ตารางแสดงผล */}
         <div className="overflow-x-auto shadow-md rounded-lg border border-gray-200">
           <table className="min-w-full bg-white text-sm">
             <thead className="bg-purple-100 text-purple-800 uppercase text-xs font-semibold tracking-wider">
@@ -397,7 +432,7 @@ const Dashboard = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {mockTeachers.map((teacher, index) => (
+              {filteredTeachers.map((teacher, index) => (
                 <tr
                   key={index}
                   className="hover:bg-gray-50 transition duration-150"
@@ -416,13 +451,19 @@ const Dashboard = () => {
                       {teacher.position}
                     </span>
                   </td>
-
                   <td className="px-4 py-2 text-gray-700">{teacher.role}</td>
                   <td className="px-4 py-2 text-gray-700">
                     {teacher.phone || "-"}
                   </td>
                 </tr>
               ))}
+              {filteredTeachers.length === 0 && (
+                <tr>
+                  <td colSpan="6" className="text-center py-4 text-gray-500">
+                    ไม่พบข้อมูลครูตามที่ค้นหา
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

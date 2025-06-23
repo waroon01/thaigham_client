@@ -41,6 +41,7 @@ tbody tr:hover {
 }
 .btn:hover {
     transform: translateY(-1px);
+    cursor: pointer;
 }
 .btn:active {
     transform: translateY(1px);
