@@ -32,25 +32,26 @@ const LayoutAdmin = () => {
             </svg>
             <span className="ml-2 font-bold text-xl">ระบบนักเรียน</span>
           </div>
-          <button
-            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="text-white md:hidden focus:outline-none"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-              />
-            </svg>
-          </button>
+<button
+  id="mobile-menu-button"
+  className="mr-2"
+  onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+>
+  <svg
+    className="h-6 w-6 text-gray-600"
+    fill="none"
+    viewBox="0 0 24 24"
+    stroke="currentColor"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M4 6h16M4 12h16M4 18h16"
+    />
+  </svg>
+</button>
+
         </div>
 
         <nav className="mt-5 px-2 flex-1 overflow-y-auto">
