@@ -18,6 +18,8 @@ import Calendar from "../pages/admin/Calendar";
 import DashboardUser from "../pages/user/DashboardUser";
 import TableStudent from "../pages/user/TableStudent";
 import CalendarUser from "../pages/user/CalendarUser";
+import TestForm from "../pages/user/TestForm";
+import DynamicInput from "../pages/user/DynamicInput";
 
 
 const router = createBrowserRouter([
@@ -33,6 +35,8 @@ const router = createBrowserRouter([
         { path: 'about', element: <About /> },
         { path: 'register', element: <RegisterPage /> },
         { path: 'login', element: <LoginPage /> },
+        { path: 'test', element: <TestForm /> },
+        { path: 'dynamicinput', element: <DynamicInput /> },
       ]
     },
     

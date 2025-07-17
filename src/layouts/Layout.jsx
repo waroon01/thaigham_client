@@ -142,6 +142,52 @@ const LayoutAdmin = () => {
                 </svg>
                 <span className="menu-text">ปฏิทินกิจกรรม</span>
               </NavLink>
+
+              <NavLink
+                to="/test"
+                className={({ isActive }) =>
+                  `menu-item flex items-center px-4 py-3 text-white rounded-lg hover:bg-pink-800 mb-1 ${isActive ? 'bg-pink-700' : ''}`
+                }
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 menu-icon mr-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span className="menu-text">ฟอร์มทดสอบ</span>
+              </NavLink>
+
+              <NavLink
+                to="/dynamicinput"
+                className={({ isActive }) =>
+                  `menu-item flex items-center px-4 py-3 text-white rounded-lg hover:bg-pink-800 mb-1 ${isActive ? 'bg-pink-700' : ''}`
+                }
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6 menu-icon mr-3"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span className="menu-text">Dynamic input fields</span>
+              </NavLink>
               <a
                 href="#reports"
                 className="menu-item flex items-center px-4 py-3 text-white rounded-lg hover:bg-pink-800 mb-1"
