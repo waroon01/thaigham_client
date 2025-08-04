@@ -1,5 +1,6 @@
 import { useState } from "react";
 import DropdownTeacher from "../../components/app/DropdownTeacher";
+import { saveDocument } from "../../api/Document";
 
 const DynamicInput = () => {
   const [inputFields, setInputFields] = useState([
@@ -62,16 +63,20 @@ const DynamicInput = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
 
     if (!validateForm()) return;
 
     const formData = {
-      ...formValues,
-      teacher: selectedTeacher?.fullName || "",
-      inputFields,
+      teacher_name: selectedTeacher?.fullName || "",
+      date_accept: formValues.date_accept,
+      time_accept: formValues.time_accept,
+      receiver: formValues.receiver,
+      documents: inputFields,
     };
+
+    await saveDocument()
 
     console.log("✅ Submitted:", formData);
     alert("ส่งข้อมูลเรียบร้อย!");
@@ -91,12 +96,19 @@ const DynamicInput = () => {
   return (
     <div className="container mx-auto">
       <div className="w-full bg-white shadow-xl rounded-xl flex flex-col mx-4 md:mx-8 p-8 gap-6 border border-gray-200">
-        <h1 className="text-center text-xl font-semibold text-gray-700">📄 ฟอร์มฝากเอกสาร</h1>
+        <h1 className="text-center text-xl font-semibold text-gray-700">
+          📄 ฟอร์มฝากเอกสาร
+        </h1>
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 border border-amber-200 px-6 py-4 rounded-2xl bg-amber-50">
             <div>
-              <label htmlFor="date_accept" className="text-sm font-medium text-gray-600">วันที่ :</label>
+              <label
+                htmlFor="date_accept"
+                className="text-sm font-medium text-gray-600"
+              >
+                วันที่ :
+              </label>
               <input
                 type="date"
                 name="date_accept"
@@ -106,7 +118,12 @@ const DynamicInput = () => {
               />
             </div>
             <div>
-              <label htmlFor="time_accept" className="text-sm font-medium text-gray-600">เวลา :</label>
+              <label
+                htmlFor="time_accept"
+                className="text-sm font-medium text-gray-600"
+              >
+                เวลา :
+              </label>
               <input
                 type="time"
                 name="time_accept"
@@ -117,10 +134,17 @@ const DynamicInput = () => {
             </div>
             <div className="md:col-span-2">
               <DropdownTeacher onSelect={setSelectedTeacher} />
-              {errors.teacher && <p className="text-red-500 text-sm mt-1">{errors.teacher}</p>}
+              {errors.teacher && (
+                <p className="text-red-500 text-sm mt-1">{errors.teacher}</p>
+              )}
             </div>
             <div className="md:col-span-2">
-              <label htmlFor="receiver" className="text-sm font-medium text-gray-600">ชื่อผู้รับเอกสาร :</label>
+              <label
+                htmlFor="receiver"
+                className="text-sm font-medium text-gray-600"
+              >
+                ชื่อผู้รับเอกสาร :
+              </label>
               <input
                 type="text"
                 name="receiver"
@@ -129,7 +153,9 @@ const DynamicInput = () => {
                 value={formValues.receiver}
                 onChange={handleChange}
               />
-              {errors.receiver && <p className="text-red-500 text-sm mt-1">{errors.receiver}</p>}
+              {errors.receiver && (
+                <p className="text-red-500 text-sm mt-1">{errors.receiver}</p>
+              )}
             </div>
           </div>
 
@@ -145,7 +171,9 @@ const DynamicInput = () => {
                     onChange={(e) => handleValueChange(index, "docname", e)}
                   />
                   {errors.inputFields?.[index]?.docname && (
-                    <p className="text-red-500 text-sm mt-1">{errors.inputFields[index].docname}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.inputFields[index].docname}
+                    </p>
                   )}
                 </div>
                 <div className="flex-1">
@@ -157,7 +185,9 @@ const DynamicInput = () => {
                     onChange={(e) => handleValueChange(index, "title", e)}
                   />
                   {errors.inputFields?.[index]?.title && (
-                    <p className="text-red-500 text-sm mt-1">{errors.inputFields[index].title}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.inputFields[index].title}
+                    </p>
                   )}
                 </div>
                 <div className="flex-1">
@@ -169,7 +199,9 @@ const DynamicInput = () => {
                     onChange={(e) => handleValueChange(index, "note", e)}
                   />
                   {errors.inputFields?.[index]?.note && (
-                    <p className="text-red-500 text-sm mt-1">{errors.inputFields[index].note}</p>
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.inputFields[index].note}
+                    </p>
                   )}
                 </div>
                 <button
