@@ -76,7 +76,7 @@ const DynamicInput = () => {
       documents: inputFields,
     };
 
-    await saveDocument()
+    await saveDocument(formData)
 
     console.log("✅ Submitted:", formData);
     alert("ส่งข้อมูลเรียบร้อย!");
