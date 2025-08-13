@@ -10,7 +10,7 @@ const ITEMS_PER_PAGE = 10;
 const Manage = () => {
   const actionLoadStudent = useSchoolStore((state) => state.actionLoadStudent);
   const students = useSchoolStore((state) => state.students);
-  console.log("students ",students)
+  console.log("students ", students);
   const token = useSchoolStore((state) => state.token);
 
   const navigate = useNavigate();
@@ -123,7 +123,10 @@ const Manage = () => {
                 type="text"
                 placeholder="ค้นหานักเรียน"
                 value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
+                onChange={(e) => {
+                  setSearchText(e.target.value);
+                  setCurrentPage(1);
+                }}
                 className="pl-10 pr-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
               />
               <svg
@@ -199,7 +202,6 @@ const Manage = () => {
               เพิ่มนักเรียน
             </button>
             <PDFGenerator filteredStudents={filteredStudents} />
-            
           </div>
         </div>
 
