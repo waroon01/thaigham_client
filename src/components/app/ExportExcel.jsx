@@ -9,7 +9,8 @@ const ExportExcel = () => {
 
   const [availableKeys, setAvailableKeys] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [searchClass, setSearchClass] = useState("");
+  const [searchLevel, setSearchLevel] = useState("");
+  const [searchRoom, setSearchRoom] = useState("");
 
   useEffect(() => {
     actionLoadStudent();
@@ -32,9 +33,17 @@ const ExportExcel = () => {
     );
   };
 
-  const filteredStudents = students.filter((student) =>
-    student.class_level?.toLowerCase().includes(searchClass.toLowerCase())
-  );
+  const filteredStudents = students.filter((student) => {
+    const matchLevel = searchLevel
+      ? student.class_level?.toLowerCase().includes(searchLevel.toLowerCase())
+      : true;
+
+    const matchRoom = searchRoom
+      ? student.class_room?.toLowerCase().includes(searchRoom.toLowerCase())
+      : true;
+
+    return matchLevel && matchRoom;
+  });
 
   const handleExport = () => {
     if (selectedKeys.length === 0) {
@@ -75,12 +84,19 @@ const ExportExcel = () => {
         ))}
       </div>
 
-      <div className="mb-4">
+      <div className="mb-4 grid grid-cols-2 gap-2">
         <input
           type="text"
           placeholder="ค้นหาตามระดับชั้น เช่น อ.2"
-          value={searchClass}
-          onChange={(e) => setSearchClass(e.target.value)}
+          value={searchLevel}
+          onChange={(e) => setSearchLevel(e.target.value)}
+          className="border px-3 py-2 rounded w-full"
+        />
+        <input
+          type="text"
+          placeholder="ค้นหาตามห้อง เช่น 1"
+          value={searchRoom}
+          onChange={(e) => setSearchRoom(e.target.value)}
           className="border px-3 py-2 rounded w-full"
         />
       </div>
