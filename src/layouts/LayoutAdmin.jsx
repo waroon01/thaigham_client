@@ -66,7 +66,12 @@ const LayoutAdmin = () => {
               }`
             }
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -85,7 +90,12 @@ const LayoutAdmin = () => {
               }`
             }
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -104,7 +114,12 @@ const LayoutAdmin = () => {
               }`
             }
           >
-            <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -113,6 +128,30 @@ const LayoutAdmin = () => {
               />
             </svg>
             {isSidebarOpen && <span className="ml-3">ปฏิทินกิจกรรม</span>}
+          </NavLink>
+
+          <NavLink
+            to="/admin/export"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-3 rounded-lg hover:bg-purple-800 mb-1 ${
+                isActive ? "bg-purple-700" : ""
+              }`
+            }
+          >
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            {isSidebarOpen && <span className="ml-3">ส่งออกรายชิ่อ</span>}
           </NavLink>
         </nav>
 

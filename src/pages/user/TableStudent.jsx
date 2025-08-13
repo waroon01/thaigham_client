@@ -8,6 +8,7 @@ const ITEMS_PER_PAGE = 10;
 const TableStudent = () => {
   const actionLoadStudent = useSchoolStore((state) => state.actionLoadStudent);
   const students = useSchoolStore((state) => state.students);
+  console.log("students ",students)
   const navigate = useNavigate();
 
   const [searchText, setSearchText] = useState("");

@@ -10,6 +10,7 @@ const ITEMS_PER_PAGE = 10;
 const Manage = () => {
   const actionLoadStudent = useSchoolStore((state) => state.actionLoadStudent);
   const students = useSchoolStore((state) => state.students);
+  console.log("students ",students)
   const token = useSchoolStore((state) => state.token);
 
   const navigate = useNavigate();
@@ -198,6 +199,7 @@ const Manage = () => {
               เพิ่มนักเรียน
             </button>
             <PDFGenerator filteredStudents={filteredStudents} />
+            
           </div>
         </div>
 

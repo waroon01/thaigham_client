@@ -20,6 +20,7 @@ import TableStudent from "../pages/user/TableStudent";
 import CalendarUser from "../pages/user/CalendarUser";
 import TestForm from "../pages/user/TestForm";
 import DynamicInput from "../pages/user/DynamicInput";
+import ExportExcel from "../components/app/ExportExcel";
 
 
 const router = createBrowserRouter([
@@ -51,7 +52,8 @@ const router = createBrowserRouter([
         { path: 'manage', element: <Manage /> },
         { path: 'formadd', element: <FormAddStudent /> },
         { path: 'formedit', element: <FormEditStudent /> },
-        { path: 'calendar', element: <Calendar /> }
+        { path: 'calendar', element: <Calendar /> },
+        { path: 'export', element: <ExportExcel /> }
       ]
     },
 
